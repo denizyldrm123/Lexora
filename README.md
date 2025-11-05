@@ -1,2 +1,3 @@
 # Lexora
-Lexora dictionary ai app
+AI-Powered Language Learning Dictionary
+
