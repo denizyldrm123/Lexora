@@ -1,20 +1,21 @@
 from flask import Flask, request, jsonify, render_template
-from ai.meaning import (
+from dotenv import load_dotenv
+load_dotenv()
+from ai.meaning  import (
     get_word_meaning,
     get_word_synonyms,
     get_word_examples
 )
 import os 
-from dotenv import load_dotenv
 
 lexora = Flask(__name__)
-load_dotenv()
+
 
 @lexora.route("/")
 def home():
-    return render_template("mainpage.html")
+    return render_template("mainpage1.html")
 
-@lexora.route("api/meaning", methods=["post"])
+@lexora.route("/api/meaning", methods=["post"])
 def api_meaning():
     data = request.get_json()
     text = data.get("text","")
@@ -29,7 +30,7 @@ def api_synonyms():
     result = get_word_synonyms(text)
     return jsonify({"synonyms":result})
 
-@lexora.route("api/examples",methods=["POST"])
+@lexora.route("/api/examples",methods=["POST"])
 def api_examles():
     data = request.get_json()
     text = data.get("text", "")
