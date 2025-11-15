@@ -1,7 +1,12 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
+from services.word_service import update_word
+
 load_dotenv()
-from ai.meaning  import (
+from backend.ai.meaning  import (
     get_word_meaning,
     get_word_synonyms,
     get_word_examples
@@ -9,10 +14,12 @@ from ai.meaning  import (
 import os 
 
 lexora = Flask(__name__)
-
-
 @lexora.route("/")
 def home():
+    return render_template("index.html")
+
+@lexora.route("/dictionary")
+def dictionary():
     return render_template("dictionary.html")
 
 @lexora.route("/library")
@@ -38,7 +45,7 @@ def api_synonyms():
     return jsonify({"synonyms":result})
 
 @lexora.route("/api/examples",methods=["POST"])
-def api_examles():
+def api_examples():
     data = request.get_json()
     text = data.get("text", "")
 
