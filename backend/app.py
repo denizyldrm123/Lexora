@@ -13,7 +13,7 @@ lexora = Flask(__name__)
 
 @lexora.route("/")
 def home():
-    return render_template("mainpage1.html")
+    return render_template("dictionary.html")
 
 @lexora.route("/api/meaning", methods=["post"])
 def api_meaning():
