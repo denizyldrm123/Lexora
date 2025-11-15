@@ -1,6 +1,5 @@
 venv/
 .env
 backend/.env
-database/words.json
 __pycache__/
 *.pyc
