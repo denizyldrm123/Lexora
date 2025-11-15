@@ -4,17 +4,6 @@ import os
 def get_client():
     return OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def get_word_meaning1(text):
-    client = get_client()
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "Give the meaning clearly and simply."},
-            {"role": "user", "content": f"Meaning of: {text}"}
-        ]
-    )
-    return response.choices[0].message.content
-
 def get_word_translation(word):
     client = get_client()
 
