@@ -1,19 +1,22 @@
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
-from services.word_service import update_word
+import sys
+import os
+
+# Add parent directory to path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 load_dotenv()
-from backend.ai.meaning  import (
+
+from ai.meaning import (
     get_word_meaning,
     get_word_synonyms,
     get_word_examples
 )
-import os 
 
 lexora = Flask(__name__)
+
+
 @lexora.route("/")
 def home():
     return render_template("index.html")
