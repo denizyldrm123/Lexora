@@ -4,7 +4,7 @@
  */
 
 // API Base URL
-const API_BASE = 'http://127.0.0.1:5000';
+const API_BASE = 'https://lexora-54ms.onrender.com';
 
 // DOM Elements
 const navStreakCount = document.getElementById('navStreakCount');
