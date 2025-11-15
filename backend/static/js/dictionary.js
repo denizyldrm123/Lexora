@@ -94,9 +94,7 @@ async function getSynonyms() {
     try {
         const response = await fetch(`${API_BASE}/api/synonyms`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: word })
         });
         
@@ -105,14 +103,13 @@ async function getSynonyms() {
         }
         
         const data = await response.json();
-        
-        // Backend returns string like "hi, hey, greetings"
-        // Convert to array
-        const synonymsArray = data.synonyms
-            .split(',')
-            .map(s => s.trim())
-            .filter(s => s.length > 0);
-        
+
+        // 🔥 Backend returns ARRAY, not string
+        // Ensure it's array
+        const synonymsArray = Array.isArray(data.synonyms)
+            ? data.synonyms
+            : String(data.synonyms).split(',').map(s => s.trim());
+
         displaySynonyms(word, synonymsArray);
         
     } catch (error) {
@@ -123,11 +120,27 @@ async function getSynonyms() {
     }
 }
 
+
+
 function displaySynonyms(word, synonyms) {
+
+    // Empty control
+    if (!synonyms || synonyms.length === 0) {
+        resultBox.innerHTML = `
+            <div class="result-header">${word}</div>
+            <div class="result-section">
+                <div class="result-label">Synonyms & Related Words</div>
+                <div class="result-content">No synonyms found.</div>
+            </div>
+        `;
+        return;
+    }
+
+    // Create tags
     const synonymTags = synonyms.map(syn => 
         `<span class="synonym-tag">${syn}</span>`
     ).join('');
-    
+
     resultBox.innerHTML = `
         <div class="result-header">${word}</div>
         <div class="result-section">
@@ -138,6 +151,7 @@ function displaySynonyms(word, synonyms) {
         </div>
     `;
 }
+
 
 // ============== API CALL 3: GET EXAMPLES ==============
 async function getExamples() {

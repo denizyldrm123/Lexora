@@ -8,7 +8,7 @@ from database.loader import load_words, save_words
 def update_word(word, meaning=None, synonyms=None, examples=None, translation=None):
     db = load_words()
     words = db.get("words",{})
-    word = word.lover()
+    word = word.lower()
 
     if word not in words:
         words[word] = {}

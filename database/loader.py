@@ -1,8 +1,8 @@
 import json
 import os
-
-WORDS_DB = "database/words.json"
-USER_DB = "database/user.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+WORDS_DB = os.path.join(BASE_DIR, "words.json")
+USER_DB = os.path.join(BASE_DIR, "user.json")
 
 # ---- WORDS ----
 def load_words():
