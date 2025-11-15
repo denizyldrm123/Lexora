@@ -15,6 +15,13 @@ lexora = Flask(__name__)
 def home():
     return render_template("dictionary.html")
 
+@lexora.route("/library")
+def library():
+    return render_template("library.html")
+@lexora.route("/streak")
+def streak():
+    return render_template("streak.html")
+
 @lexora.route("/api/meaning", methods=["post"])
 def api_meaning():
     data = request.get_json()
