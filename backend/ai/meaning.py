@@ -1,9 +1,11 @@
 from openai import OpenAI
 import os
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+def get_client():
+    return OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def get_word_meaning(text):
+    client = get_client()
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -15,6 +17,7 @@ def get_word_meaning(text):
 
 
 def get_word_synonyms(text):
+    client = get_client()
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -26,6 +29,7 @@ def get_word_synonyms(text):
 
 
 def get_word_examples(text):
+    client = get_client()
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
