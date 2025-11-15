@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEXORA - Library</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-logo">LEXORA</div>
+        <div class="nav-tabs">
+            <a href="/dictionary" class="nav-tab">📖 Dictionary</a>
+            <a href="/library" class="nav-tab active">📚 Library</a>
+            <a href="/streak" class="nav-tab">🔥 Streak</a>
+        </div>
+        <div class="streak-badge">
+            <span class="fire">🔥</span>
+            <span class="streak-count" id="streakCount">0</span>
+        </div>
+    </nav>
+
+    <!-- Library Page -->
+    <div class="page-container">
+        <div class="library-header">
+            <div>
+                <h2 class="library-title">My Vocabulary</h2>
+                <p class="word-count">Total words: <span id="totalWords">0</span></p>
+            </div>
+        </div>
+
+        <div class="words-grid" id="wordsGrid">
+            <div class="empty-library">
+                <div class="icon">📚</div>
+                <h3>No words saved yet</h3>
+                <p style="margin-top: 8px; color: #888;">Start searching words in the Dictionary!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/library.js"></script>
+</body>
+</html>

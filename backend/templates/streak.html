@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEXORA - Streak</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-logo">LEXORA</div>
+        <div class="nav-tabs">
+            <a href="/dictionary" class="nav-tab">📖 Dictionary</a>
+            <a href="/library" class="nav-tab">📚 Library</a>
+            <a href="/streak" class="nav-tab active">🔥 Streak</a>
+        </div>
+        <div class="streak-badge">
+            <span class="fire">🔥</span>
+            <span class="streak-count" id="navStreakCount">0</span>
+        </div>
+    </nav>
+
+    <!-- Streak Page -->
+    <div class="page-container">
+        <div class="streak-page">
+            <div class="streak-display">
+                <div style="font-size: 80px;">🔥</div>
+                <div class="streak-number" id="streakNumber">0</div>
+                <div class="streak-label">Day Streak</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalWords">0</div>
+                    <div class="stat-label">Total Words</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="longestStreak">0</div>
+                    <div class="stat-label">Longest Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="todayWords">0</div>
+                    <div class="stat-label">Words Today</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/streak.js"></script>
+</body>
+</html>

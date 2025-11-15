@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEXORA - Dictionary</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-logo">LEXORA</div>
+        <div class="nav-tabs">
+            <a href="/dictionary" class="nav-tab active">📖 Dictionary</a>
+            <a href="/library" class="nav-tab">📚 Library</a>
+            <a href="/streak" class="nav-tab">🔥 Streak</a>
+        </div>
+        <div class="streak-badge">
+            <span class="fire">🔥</span>
+            <span class="streak-count" id="streakCount">0</span>
+        </div>
+    </nav>
+
+    <!-- Dictionary Page -->
+    <div class="page-container">
+        <div class="dictionary-container">
+            
+            <!-- Input Panel -->
+            <div class="input-panel">
+                <div class="panel-title">Enter Word</div>
+                
+                <input 
+                    type="text" 
+                    id="wordInput"
+                    class="search-box" 
+                    placeholder="Type a word to learn..."
+                >
+
+                <div class="panel-title">Actions</div>
+                <div class="action-buttons">
+                    <!-- USE CASE 1: Get Meaning -->
+                    <button id="meaningBtn" class="use-case-btn">
+                        <span class="icon">📖</span>
+                        <span>Get Meaning</span>
+                    </button>
+
+                    <!-- USE CASE 2: Get Synonyms -->
+                    <button id="synonymBtn" class="use-case-btn">
+                        <span class="icon">🔤</span>
+                        <span>Get Synonyms</span>
+                    </button>
+
+                    <!-- USE CASE 3: Get Examples -->
+                    <button id="exampleBtn" class="use-case-btn">
+                        <span class="icon">💬</span>
+                        <span>Get Examples</span>
+                    </button>
+
+                    <!-- Clear -->
+                    <button id="clearBtn" class="use-case-btn">
+                        <span class="icon">🗑️</span>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output Panel -->
+            <div class="output-panel">
+                <div class="panel-title">Results</div>
+                <div class="result-box" id="resultBox">
+                    <p style="color: #666; font-style: italic;">Results will appear here...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/dictionary.js"></script>
+</body>
+</html>
