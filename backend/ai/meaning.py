@@ -81,13 +81,24 @@ def get_word_synonyms(word):
 
 
 
-def get_word_examples(text):
+def get_word_examples(word):
     client = get_client()
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "Provide 2–3 short example sentences."},
-            {"role": "user", "content": f"Give example sentences for: {text}"}
-        ]
+
+    input_prompt = (
+        f"Generate short example sentences that contain the word '{word}'.\n"
+        "Return ONLY a JSON object:\n"
+        "{ \"examples\": [\"sentence1\", \"sentence2\", \"sentence3\"] }\n"
+        "Rules:\n"
+        "- Provide 2 or 3 short English sentences.\n"
+        "- Each sentence MUST contain the word.\n"
+        "- No meanings.\n"
+        "- No synonyms.\n"
+        "- Output MUST be valid JSON ONLY."
     )
-    return response.choices[0].message.content
+
+    response = client.responses.create(
+        model="gpt-4o-mini",
+        input=input_prompt
+    )
+
+    return response.output_text
