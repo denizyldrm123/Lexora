@@ -12,11 +12,11 @@ load_dotenv()
 from ai.meaning import (
     get_word_meaning,
     get_word_synonyms,
-    get_word_examples
+    get_word_examples,
+    get_word_translation
 )
 
 lexora = Flask(__name__)
-
 
 
 @lexora.route("/")
@@ -40,10 +40,27 @@ def streak():
 @lexora.route("/api/meaning", methods=["post"])
 def api_meaning():
     data = request.get_json()
-    text = data.get("text","")
+    word = data.get("text","")
+    meaning_json = json.loads(get_word_meaning(word))
+    result = meaning_json["meaning"]
+    update_word(
+        word=word,
+        meaning=result
+    )
+    return jsonify({"meaning":result})
 
-    result = get_word_meaning(text)
-    return jsonify({"meaning": result})
+@lexora.route("/api/translation", methods=["post"])
+def api_translation():
+    data = request.get_json()
+    word = data.get("text","")
+    translation_json = json.loads(get_word_translation(word))
+    result = translation_json["meaning"]
+    update_word(
+        word=word,
+        translation=result
+    )
+    return jsonify({"translation":result})
+
 
 
 @lexora.route("/api/synonyms",methods=["POST"])
@@ -58,14 +75,18 @@ def api_synonyms():
     )
     return jsonify({"synonyms":result})
 
-
 @lexora.route("/api/examples",methods=["POST"])
 def api_examples():
     data = request.get_json()
-    text = data.get("text", "")
-
-    result = get_word_examples(text)
+    word = data.get("text", "")
+    example_json = json.loads(get_word_examples(word))
+    result = example_json["examples"]
+    update_word(
+        word=word,
+        examples=result
+    )
     return jsonify({"examples" :result})
+
 
 if __name__ == "__main__":
     lexora.run(debug=True)
