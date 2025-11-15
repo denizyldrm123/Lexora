@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEXORA - AI Dictionary</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #0a0a0a, #000);
+            color: #fff;
+            font-family: "Segoe UI", Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ============== WELCOME PAGE ============== */
+        #welcomePage {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .logo-title {
+            font-size: clamp(48px, 8vw, 80px);
+            font-weight: 800;
+            background: linear-gradient(135deg, #33a3ff, #0066ff, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            letter-spacing: 4px;
+        }
+
+        .welcome-subtitle {
+            font-size: 18px;
+            color: #888;
+            margin-bottom: 48px;
+            letter-spacing: 2px;
+        }
+
+        .start-btn {
+            padding: 18px 48px;
+            font-size: 20px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #007bff, #0056ff);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 30px rgba(0, 115, 255, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(0, 115, 255, 0.7);
+        }
+
+        /* ============== MAIN APP CONTAINER ============== */
+        #mainApp {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(17, 17, 17, 0.95);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #33a3ff, #0066ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-tab {
+            padding: 10px 24px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-tab.active {
+            background: rgba(0, 123, 255, 0.2);
+            border-color: #007bff;
+            color: #33a3ff;
+        }
+
+        .nav-tab:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+
+        /* Streak Badge */
+        .streak-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 149, 0, 0.1);
+            border: 1px solid rgba(255, 149, 0, 0.3);
+            border-radius: 20px;
+        }
+
+        .streak-badge .fire {
+            font-size: 18px;
+        }
+
+        .streak-count {
+            font-weight: 600;
+            color: #ff9500;
+        }
+
+        /* Pages Container */
+        .page {
+            display: none;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* ============== DICTIONARY PAGE ============== */
+        .dictionary-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .input-panel, .output-panel {
+            background: rgba(17, 17, 17, 0.8);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            background: #1c1c1c;
+            border: 2px solid #333;
+            border-radius: 12px;
+            color: #fff;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Use Case Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .use-case-btn {
+            padding: 14px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .use-case-btn .icon {
+            font-size: 20px;
+        }
+
+        .use-case-btn:hover {
+            background: rgba(0, 123, 255, 0.15);
+            border-color: #007bff;
+            transform: translateY(-2px);
+        }
+
+        .use-case-btn:active {
+            transform: scale(0.98);
+        }
+
+        .use-case-btn.loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .use-case-btn.loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        /* Export Button */
+        .export-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .export-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Output Panel */
+        .result-box {
+            background: #1c1c1c;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 24px;
+            min-height: 400px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .result-box:empty::before {
+            content: "Results will appear here...";
+            color: #666;
+            font-style: italic;
+        }
+
+        .result-header {
+            font-size: 28px;
+            font-weight: 700;
+            color: #33a3ff;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #333;
+        }
+
+        .result-section {
+            margin-bottom: 20px;
+        }
+
+        .result-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .result-content {
+            color: #eee;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .example-item {
+            padding: 12px 16px;
+            background: rgba(0, 123, 255, 0.1);
+            border-left: 3px solid #007bff;
+            margin-bottom: 8px;
+            border-radius: 6px;
+        }
+
+        .synonym-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #a78bfa;
+        }
+
+        /* ============== LIBRARY PAGE ============== */
+        .library-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .library-title {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .word-count {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .words-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .word-card {
+            background: rgba(17, 17, 17, 0.8);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .word-card:hover {
+            border-color: #007bff;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 123, 255, 0.2);
+        }
+
+        .card-word {
+            font-size: 22px;
+            font-weight: 700;
+            color: #33a3ff;
+            margin-bottom: 12px;
+        }
+
+        .card-definition {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .card-date {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .empty-library {
+            text-align: center;
+            padding: 80px 20px;
+            color: #666;
+        }
+
+        .empty-library .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        /* ============== STREAK PAGE ============== */
+        .streak-page {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .streak-display {
+            display: inline-block;
+            margin-bottom: 40px;
+        }
+
+        .streak-number {
+            font-size: 120px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff9500, #ff6b00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .streak-label {
+            font-size: 24px;
+            color: #888;
+            margin-top: 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            background: rgba(17, 17, 17, 0.8);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #33a3ff;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ============== RESPONSIVE ============== */
+        @media (max-width: 768px) {
+            .dictionary-container {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 16px;
+                padding: 16px 20px;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .logo-title {
+                font-size: 48px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1c1c1c;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============== WELCOME PAGE ============== -->
+    <div id="welcomePage">
+        <div class="logo-title">LEXORA</div>
+        <p class="welcome-subtitle">AI-Powered Language Learning Dictionary</p>
+        <button class="start-btn" onclick="startApp()">Start Learning →</button>
+    </div>
+
+    <!-- ============== MAIN APP ============== -->
+    <div id="mainApp">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-logo">LEXORA</div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="switchPage('dictionary')">📖 Dictionary</button>
+                <button class="nav-tab" onclick="switchPage('library')">📚 Library</button>
+                <button class="nav-tab" onclick="switchPage('streak')">🔥 Streak</button>
+            </div>
+            <div class="streak-badge">
+                <span class="fire">🔥</span>
+                <span class="streak-count" id="navStreakCount">0</span>
+            </div>
+        </nav>
+
+        <!-- ============== DICTIONARY PAGE ============== -->
+        <div id="dictionaryPage" class="page active">
+            <div class="dictionary-container">
+                
+                <!-- Input Panel -->
+                <div class="input-panel">
+                    <div class="panel-title">Enter Word</div>
+                    <input 
+                        type="text" 
+                        id="wordInput" 
+                        class="search-box" 
+                        placeholder="Type a word to learn..."
+                        onkeypress="handleEnter(event)"
+                    >
+
+                    <div class="panel-title">Actions</div>
+                    <div class="action-buttons">
+                        <!-- USE CASE 1 -->
+                        <button class="use-case-btn" onclick="getMeaning()" id="meaningBtn">
+                            <span class="icon">📖</span>
+                            <span>Get Meaning</span>
+                        </button>
+
+                        <!-- USE CASE 2 -->
+                        <button class="use-case-btn" onclick="getSynonyms()" id="synonymBtn">
+                            <span class="icon">🔤</span>
+                            <span>Get Synonyms</span>
+                        </button>
+
+                        <!-- USE CASE 3 -->
+                        <button class="use-case-btn" onclick="getExamples()" id="exampleBtn">
+                            <span class="icon">💬</span>
+                            <span>Get Examples</span>
+                        </button>
+
+                        <button class="use-case-btn" onclick="clearResults()">
+                            <span class="icon">🗑️</span>
+                            <span>Clear</span>
+                        </button>
+                    </div>
+
+                    <!-- USE CASE 4 -->
+                    <button class="export-btn" onclick="exportPDF()" id="exportBtn" disabled>
+                        📄 Export to PDF
+                    </button>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="output-panel">
+                    <div class="panel-title">Results</div>
+                    <div class="result-box" id="resultBox">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============== LIBRARY PAGE ============== -->
+        <div id="libraryPage" class="page">
+            <div class="library-header">
+                <div>
+                    <h2 class="library-title">My Vocabulary</h2>
+                    <p class="word-count">Total words: <span id="wordCount">0</span></p>
+                </div>
+            </div>
+
+            <div class="words-grid" id="wordsGrid">
+                <div class="empty-library">
+                    <div class="icon">📚</div>
+                    <h3>No words saved yet</h3>
+                    <p style="margin-top: 8px; color: #888;">Start searching words in the Dictionary!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============== STREAK PAGE ============== -->
+        <div id="streakPage" class="page">
+            <div class="streak-page">
+                <div class="streak-display">
+                    <div>🔥</div>
+                    <div class="streak-number" id="streakNumber">0</div>
+                    <div class="streak-label">Day Streak</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalWords">0</div>
+                        <div class="stat-label">Total Words</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="longestStreak">0</div>
+                        <div class="stat-label">Longest Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="todayWords">0</div>
+                        <div class="stat-label">Words Today</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ============== STATE MANAGEMENT ==============
+        let currentWord = '';
+        let currentWordData = {}; // Stores full word data (meaning, synonyms, examples)
+        let wordLibrary = [];
+        let streakData = {
+            current: 0,
+            longest: 0,
+            totalWords: 0,
+            todayWords: 0,
+            lastActivityDate: null
+        };
+
+        // ============== NAVIGATION ==============
+        function startApp() {
+            document.getElementById('welcomePage').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            loadLibrary();
+            updateStreakDisplay();
+        }
+
+        function switchPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+            // Show selected page
+            document.getElementById(pageName + 'Page').classList.add('active');
+            event.target.classList.add('active');
+
+            // Update content when switching
+            if (pageName === 'library') loadLibrary();
+            if (pageName === 'streak') updateStreakDisplay();
+        }
+
+        function handleEnter(event) {
+            if (event.key === 'Enter') getMeaning();
+        }
+
+        // ============== USE CASE 1: GET MEANING ==============
+        async function getMeaning() {
+            const word = document.getElementById('wordInput').value.trim();
+            if (!word) {
+                alert('Please enter a word!');
+                return;
+            }
+
+            currentWord = word;
+            const btn = document.getElementById('meaningBtn');
+            btn.classList.add('loading');
+
+            try {
+                // TODO: Replace with actual API call
+                await simulateAPI(1500);
+                
+                const mockData = {
+                    word: word,
+                    definition: `A ${word} is a concept or object with specific characteristics and functions within its context. It represents an important element in language learning and communication.`
+                };
+
+                // Store in currentWordData
+                if (!currentWordData.word) currentWordData = { word: word };
+                currentWordData.definition = mockData.definition;
+
+                displayMeaning(mockData);
+                updateStreak(); // Update streak on word search
+                document.getElementById('exportBtn').disabled = false;
+
+            } catch (error) {
+                alert('Error fetching meaning. Please try again.');
+            } finally {
+                btn.classList.remove('loading');
+            }
+        }
+
+        function displayMeaning(data) {
+            const resultBox = document.getElementById('resultBox');
+            resultBox.innerHTML = `
+                <div class="result-header">${data.word}</div>
+                <div class="result-section">
+                    <div class="result-label">Definition</div>
+                    <div class="result-content">${data.definition}</div>
+                </div>
+            `;
+        }
+
+        // ============== USE CASE 2: GET SYNONYMS ==============
+        async function getSynonyms() {
+            const word = document.getElementById('wordInput').value.trim();
+            if (!word) {
+                alert('Please enter a word!');
+                return;
+            }
+
+            currentWord = word;
+            const btn = document.getElementById('synonymBtn');
+            btn.classList.add('loading');
+
+            try {
+                await simulateAPI(1500);
+                
+                const mockSynonyms = ['term', 'concept', 'notion', 'idea', 'expression'];
+
+                // Store in currentWordData
+                if (!currentWordData.word) currentWordData = { word: word };
+                currentWordData.synonyms = mockSynonyms;
+
+                displaySynonyms(word, mockSynonyms);
+                updateStreak(); // Update streak on word search
+                document.getElementById('exportBtn').disabled = false;
+
+            } catch (error) {
+                alert('Error fetching synonyms. Please try again.');
+            } finally {
+                btn.classList.remove('loading');
+            }
+        }
+
+        function displaySynonyms(word, synonyms) {
+            const resultBox = document.getElementById('resultBox');
+            resultBox.innerHTML = `
+                <div class="result-header">${word}</div>
+                <div class="result-section">
+                    <div class="result-label">Synonyms & Related Words</div>
+                    <div class="result-content">
+                        ${synonyms.map(syn => `<span class="synonym-tag">${syn}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============== USE CASE 3: GET EXAMPLES ==============
+        async function getExamples() {
+            const word = document.getElementById('wordInput').value.trim();
+            if (!word) {
+                alert('Please enter a word!');
+                return;
+            }
+
+            currentWord = word;
+            const btn = document.getElementById('exampleBtn');
+            btn.classList.add('loading');
+
+            try {
+                await simulateAPI(2000);
+                
+                const mockExamples = [
+                    `The ${word} was clearly visible in the morning light.`,
+                    `She explained the concept of ${word} to the students with great clarity.`,
+                    `Understanding ${word} is essential for mastering this topic.`
+                ];
+
+                // Store in currentWordData
+                if (!currentWordData.word) currentWordData = { word: word };
+                currentWordData.examples = mockExamples;
+
+                displayExamples(word, mockExamples);
+                updateStreak(); // Update streak on word search
+                document.getElementById('exportBtn').disabled = false;
+
+            } catch (error) {
+                alert('Error fetching examples. Please try again.');
+            } finally {
+                btn.classList.remove('loading');
+            }
+        }
+
+        function displayExamples(word, examples) {
+            const resultBox = document.getElementById('resultBox');
+            resultBox.innerHTML = `
+                <div class="result-header">${word}</div>
+                <div class="result-section">
+                    <div class="result-label">Example Sentences</div>
+                    <div class="result-content">
+                        ${examples.map(ex => `<div class="example-item">${ex}</div>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============== USE CASE 4: EXPORT PDF ==============
+        function exportPDF() {
+            if (!currentWord) {
+                alert('No word to export!');
+                return;
+            }
+
+            // TODO: Implement actual PDF export via backend
+            alert(`Exporting "${currentWord}" to PDF...\n(Backend implementation pending)`);
+        }
+
+        // ============== LIBRARY MANAGEMENT ==============
+        function saveToLibrary(word, definition) {
+            // Check if word already exists
+            const exists = wordLibrary.some(w => w.word.toLowerCase() === word.toLowerCase());
+            if (exists) return;
+
+            wordLibrary.push({
+                word: word,
+                definition: definition,
+                dateAdded: new Date().toISOString()
+            });
+
+            // Save to localStorage
+            localStorage.setItem('lexoraLibrary', JSON.stringify(wordLibrary));
+        }
+
+        function loadLibrary() {
+            // Load from localStorage
+            const saved = localStorage.getItem('lexoraLibrary');
+            if (saved) {
+                wordLibrary = JSON.parse(saved);
+            }
+
+            // Update library page
+            const wordsGrid = document.getElementById('wordsGrid');
+            document.getElementById('wordCount').textContent = wordLibrary.length;
+
+            if (wordLibrary.length === 0) {
+                wordsGrid.innerHTML = `
+                    <div class="empty-library">
+                        <div class="icon">📚</div>
+                        <h3>No words saved yet</h3>
+                        <p style="margin-top: 8px; color: #888;">Start searching words in the Dictionary!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            wordsGrid.innerHTML = wordLibrary.map(item => `
+                <div class="word-card">
+                    <div class="card-word">${item.word}</div>
+                    <div class="card-definition">${item.definition.substring(0, 120)}...</div>
+                    <div class="card-date">Added: ${new Date(item.dateAdded).toLocaleDateString()}</div>
+                </div>
+            `).join('');
+        }
+
+        // ============== STREAK MANAGEMENT ==============
+        function updateStreak() {
+            streakData.current++;
+            if (streakData.current > streakData.longest) {
+                streakData.longest = streakData.current;
+            }
+            streakData.totalWords++;
+            streakData.todayWords++;
+
+            // Save to localStorage
+            localStorage.setItem('lexoraStreak', JSON.stringify(streakData));
+            
+            // Update displays
+            document.getElementById('navStreakCount').textContent = streakData.current;
+        }
+
+        function updateStreakDisplay() {
+            // Load from localStorage
+            const saved = localStorage.getItem('lexoraStreak');
+            if (saved) {
+                streakData = JSON.parse(saved);
+            }
+
+            document.getElementById('streakNumber').textContent = streakData.current;
+            document.getElementById('totalWords').textContent = streakData.totalWords;
+            document.getElementById('longestStreak').textContent = streakData.longest;
+            document.getElementById('todayWords').textContent = streakData.todayWords;
+            document.getElementById('navStreakCount').textContent = streakData.current;
+        }
+
+        // ============== UTILITIES ==============
+        function clearResults() {
+            document.getElementById('resultBox').innerHTML = '';
+            document.getElementById('wordInput').value = '';
+            document.getElementById('exportBtn').disabled = true;
+            currentWord = '';
+        }
+
+        function simulateAPI(delay) {
+            return new Promise(resolve => setTimeout(resolve, delay));
+        }
+
+        // Initialize on load
+        window.addEventListener('load', function() {
+            updateStreakDisplay();
+        });
+    </script>
+
+</body>
+</html>
