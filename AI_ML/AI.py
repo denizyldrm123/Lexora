@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from openai import OpenAI
 import os
 
@@ -27,3 +28,6 @@ def get_word_example_sentence(text):
     )
     meaning = response.choices[0].message.content
     return meaning
+=======
+
+>>>>>>> 428c364556b444a7d7f853a6812767d21fa10bf7
