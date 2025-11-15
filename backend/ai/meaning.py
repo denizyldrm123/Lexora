@@ -15,6 +15,28 @@ def get_word_meaning1(text):
     )
     return response.choices[0].message.content
 
+def get_word_translation(word):
+    client = get_client()
+
+    input_prompt = (
+        f"Translate the word '{word}' to Turkish.\n"
+        "Return ONLY a JSON object in this exact format:\n"
+        "{ \"meaning_tr\": \"<Turkish translation>\" }\n"
+        "Rules:\n"
+        "- Only the most common Turkish translation.\n"
+        "- One line only.\n"
+        "- No English definition.\n"
+        "- No examples or synonyms.\n"
+        "- Output MUST be valid JSON ONLY."
+    )
+
+    response = client.responses.create(
+        model="gpt-4o-mini",
+        input=input_prompt
+    )
+
+    return response.output_text
+
 def get_word_meaning(word):
     client = get_client()
 
