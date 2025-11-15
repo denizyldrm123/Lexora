@@ -7,10 +7,14 @@ USER_DB = "database/user.json"
 # ---- WORDS ----
 def load_words():
     if not os.path.exists(WORDS_DB):
-        return {}
+        return {"Words":{}}
 
     with open(WORDS_DB, "r") as f:
-        return json.load(f)
+        data= json.load(f)
+    
+    if "words" not in data:
+        data={"words":{}}
+    return data
 
 def save_words(data):
     with open(WORDS_DB, "w") as f:
