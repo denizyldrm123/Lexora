@@ -10,7 +10,7 @@ def get_word_translation(word):
     input_prompt = (
         f"Translate the word '{word}' to Turkish.\n"
         "Return ONLY a JSON object in this exact format:\n"
-        "{ \"meaning_tr\": \"<Turkish translation>\" }\n"
+        "{ \"translation\": \"<Turkish translation>\" }\n"
         "Rules:\n"
         "- Only the most common Turkish translation.\n"
         "- One line only.\n"
@@ -32,7 +32,7 @@ def get_word_meaning(word):
     input_prompt = (
         f"Generate the English definition of the word '{word}'.\n"
         "Return ONLY a JSON object in this exact format:\n"
-        "{ \"meaning_en\": \"<English definition>\" }\n"
+        "{ \"meaning\": \"<English definition>\" }\n"
         "Rules:\n"
         "- Only one line English definition.\n"
         "- No Turkish meaning.\n"

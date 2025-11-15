@@ -35,8 +35,6 @@ def library():
 def streak():
     return render_template("streak.html")
 
-
-
 @lexora.route("/api/meaning", methods=["post"])
 def api_meaning():
     data = request.get_json()
