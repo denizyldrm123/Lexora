@@ -1,0 +1,32 @@
+{
+    "words": {
+        "learn": {
+            "synonyms": [
+                "study",
+                "acquire",
+                "grasp"
+            ]
+        },
+        "explain": {
+            "synonyms": [
+                "clarify",
+                "elucidate",
+                "expound"
+            ]
+        },
+        "define": {
+            "synonyms": [
+                "describe",
+                "explain",
+                "clarify"
+            ]
+        },
+        "maintain": {
+            "synonyms": [
+                "sustain",
+                "preserve",
+                "uphold"
+            ]
+        }
+    }
+}
