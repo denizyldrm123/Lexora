@@ -4,8 +4,7 @@
  */
 
 // Base API URL
-const API_BASE = 'https://lexora-54ms.onrender.com';
-
+const API_BASE = window.location.origin;
 // DOM Elements
 const wordInput = document.getElementById('wordInput');
 const meaningBtn = document.getElementById('meaningBtn');
