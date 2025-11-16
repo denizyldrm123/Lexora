@@ -5,28 +5,32 @@
                 "study",
                 "acquire",
                 "grasp"
-            ]
+            ],
+            "meaning": "To gain knowledge or skill by studying, practicing, or experiencing."
         },
         "explain": {
             "synonyms": [
                 "clarify",
                 "elucidate",
                 "expound"
-            ]
+            ],
+            "meaning": "to make something clear or understandable by describing it in more detail."
         },
         "define": {
             "synonyms": [
                 "describe",
                 "explain",
                 "clarify"
-            ]
+            ],
+            "meaning": "To state the exact meaning of a word or phrase."
         },
         "maintain": {
             "synonyms": [
                 "sustain",
                 "preserve",
                 "uphold"
-            ]
+            ],
+            "meaning": "to continue or preserve in a certain state or condition."
         },
         "type": {
             "synonyms": [
@@ -40,6 +44,22 @@
                 "This type of plant needs a lot of sunlight.",
                 "He's the type of person who helps others."
             ]
+        },
+        "start": {
+            "meaning": "To begin or commence an action or process.",
+            "synonyms": [
+                "begin",
+                "commence",
+                "initiate"
+            ],
+            "examples": [
+                "I will start my homework now.",
+                "Please start the meeting on time.",
+                "They decided to start a new project."
+            ]
+        },
+        "good": {
+            "meaning": "Having desirable qualities or satisfactory characteristics."
         }
     }
 }

@@ -31,6 +31,36 @@ def dictionary():
 def library():
     return render_template("library.html")
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__)) 
+DATA_DIR = os.path.join(BASE_DIR, "..", "database")
+WORDS_DB = os.path.join(DATA_DIR, "words.json")
+
+@lexora.route("/api/library")
+def api_library():
+    try:
+        with open(WORDS_DB, "r") as f:
+            data = json.load(f)
+
+        words_dict = data.get("words", {})
+
+        words_list = []
+
+        for word, info in words_dict.items():
+            words_list.append({
+                "word": word,
+                "meaning": info.get("meaning", ""),
+                "synonyms": info.get("synonyms", []),
+                "examples": info.get("examples", [])
+            })
+
+        return jsonify({
+            "words": words_list
+        })
+
+    except Exception as e:
+        print("Error loading library:", e)
+        return jsonify({"words": []})
+
 @lexora.route("/streak")
 def streak():
     return render_template("streak.html")

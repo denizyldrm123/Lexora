@@ -4,7 +4,7 @@
  */
 
 // API Base URL
-const API_BASE = 'https://lexora-54ms.onrender.com';
+const API_BASE = 'http://127.0.0.1:5000';
 
 // DOM Elements
 const wordsGrid = document.getElementById('wordsGrid');
@@ -52,30 +52,33 @@ function displayWords(words) {
         wordsGrid.innerHTML = `
             <div class="empty-library">
                 <div class="icon">📚</div>
-                <h3>No words saved yet</h3>
-                <p style="margin-top: 8px; color: #888;">Start searching words in the Dictionary!</p>
+                <h3>No words found</h3>
+                <p style="margin-top: 8px; color: #888;">Dictionary is empty.</p>
             </div>
         `;
         return;
     }
     
-    wordsGrid.innerHTML = words.map((wordData, index) => `
+    wordsGrid.innerHTML = words.map((wordData) => `
         <div class="word-card">
             <div class="card-word">${wordData.word}</div>
+
             <div class="card-definition">
-                ${wordData.definition ? wordData.definition.substring(0, 100) + '...' : 'No definition available'}
+                ${wordData.meaning 
+                    ? wordData.meaning.substring(0, 120) + "..."
+                    : "No meaning available"}
             </div>
+
             <div class="card-footer">
                 <div class="card-date">
-                    Added: ${formatDate(wordData.date_added)}
+                    Synonyms: ${wordData.synonyms?.length || 0}
                 </div>
-                <button class="card-delete-btn" onclick="deleteWord('${wordData.word}')">
-                    🗑️ Delete
-                </button>
             </div>
         </div>
     `).join('');
 }
+
+
 
 // ============== DELETE WORD ==============
 async function deleteWord(word) {
