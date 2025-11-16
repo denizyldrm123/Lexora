@@ -3,8 +3,12 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
 DATA_DIR = os.path.join(BASE_DIR, "..", "database")
 
-WORDS_DB = os.path.join(DATA_DIR, "words.json")
-USER_DB  = os.path.join(DATA_DIR, "user.json")
+if os.environ.get("RENDER"):
+    WORDS_DB = "/tmp/words.json"
+    USER_DB  = "/tmp/user.json"
+else:
+    WORDS_DB = os.path.join(DATA_DIR, "words.json")
+    USER_DB  = os.path.join(DATA_DIR, "user.json")
 # ---- WORDS ----
 def load_words():
     if not os.path.exists(WORDS_DB):
