@@ -27,6 +27,19 @@
                 "preserve",
                 "uphold"
             ]
+        },
+        "type": {
+            "synonyms": [
+                "kind",
+                "category",
+                "sort"
+            ],
+            "meaning": "A category of items that share common characteristics.",
+            "examples": [
+                "What type of music do you like?",
+                "This type of plant needs a lot of sunlight.",
+                "He's the type of person who helps others."
+            ]
         }
     }
 }

@@ -4,8 +4,7 @@
  */
 
 // Base API URL
-const API_BASE = 'https://lexora-54ms.onrender.com';
-
+const API_BASE = window.location.origin;
 // DOM Elements
 const wordInput = document.getElementById('wordInput');
 const meaningBtn = document.getElementById('meaningBtn');
@@ -154,6 +153,7 @@ function displaySynonyms(word, synonyms) {
 
 
 // ============== API CALL 3: GET EXAMPLES ==============
+// ============== API CALL 3: GET EXAMPLES ==============
 async function getExamples() {
     const word = wordInput.value.trim();
     
@@ -179,14 +179,27 @@ async function getExamples() {
         }
         
         const data = await response.json();
-        
-        // Backend returns string like "Example 1.\nExample 2."
-        // Convert to array
-        const examplesArray = data.examples
-            .split('\n')
-            .map(ex => ex.trim())
-            .filter(ex => ex.length > 0);
-        
+
+        // ---- FIX HERE ----
+        let examplesArray = [];
+
+        if (Array.isArray(data.examples)) {
+            // Backend sent an ARRAY → use directly
+            examplesArray = data.examples;
+        } 
+        else if (typeof data.examples === 'string') {
+            // Backend sent a STRING → split by newlines
+            examplesArray = data.examples
+                .split('\n')
+                .map(ex => ex.trim())
+                .filter(ex => ex.length > 0);
+        } 
+        else {
+            // Unexpected → leave empty
+            examplesArray = [];
+        }
+        // -------------------
+
         displayExamples(word, examplesArray);
         
     } catch (error) {
@@ -196,6 +209,7 @@ async function getExamples() {
         setLoading(exampleBtn, false);
     }
 }
+
 
 function displayExamples(word, examples) {
     const exampleItems = examples.map(ex => 
