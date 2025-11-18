@@ -3,3 +3,11 @@ venv/
 backend/.env
 __pycache__/
 *.pyc
+*.swp
+*.bak
+*.log
+*.tmp
+~$*
+.DS_Store
+Thumbs.db
+.vscode/
