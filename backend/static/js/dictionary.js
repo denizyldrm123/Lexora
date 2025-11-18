@@ -4,7 +4,7 @@
  */
 
 // Base API URL
-const API_BASE = window.location.origin;
+const API_BASE = 'http://127.0.0.1:5000';
 // DOM Elements
 const wordInput = document.getElementById('wordInput');
 const meaningBtn = document.getElementById('meaningBtn');
