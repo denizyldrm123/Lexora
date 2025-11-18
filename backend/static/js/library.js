@@ -134,11 +134,31 @@ async function deleteWord(word) {
 }
 
 // ============== EXPAND CARD (MODAL) ==============
+let currentCardIndex = 0;
+
 function expandCard(cardElement) {
     const word = cardElement.dataset.word;
-    const wordData = wordsData.find(w => w.word === word);
+    currentCardIndex = wordsData.findIndex(w => w.word === word);
+    
+    if (currentCardIndex === -1) return;
+    
+    showCardModal(currentCardIndex);
+}
+
+function showCardModal(index) {
+    const wordData = wordsData[index];
     
     if (!wordData) return;
+    
+    // Önceki modal varsa kaldır
+    const existingModal = document.querySelector('.word-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Önceki ve sonraki butonları göster/gizle
+    const hasPrev = index > 0;
+    const hasNext = index < wordsData.length - 1;
     
     // Modal oluştur
     const modal = document.createElement('div');
@@ -147,6 +167,11 @@ function expandCard(cardElement) {
         <div class="modal-overlay" onclick="closeModal()"></div>
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal()">✕</button>
+            
+            ${hasPrev ? '<button class="modal-nav modal-prev" onclick="navigateCard(-1)">‹</button>' : ''}
+            ${hasNext ? '<button class="modal-nav modal-next" onclick="navigateCard(1)">›</button>' : ''}
+            
+            <div class="modal-counter">${index + 1} / ${wordsData.length}</div>
             
             <h2 class="modal-word">${wordData.word}</h2>
             
@@ -172,7 +197,7 @@ function expandCard(cardElement) {
             ` : ''}
             
             <div class="modal-footer">
-                <button class="modal-delete-btn" onclick="deleteWord('${word}'); closeModal();">
+                <button class="modal-delete-btn" onclick="deleteWordFromModal('${wordData.word}')">
                     🗑️ Delete Word
                 </button>
             </div>
@@ -183,6 +208,28 @@ function expandCard(cardElement) {
     
     // Animation için timeout
     setTimeout(() => modal.classList.add('show'), 10);
+    
+    // Klavye navigasyonu (sol/sağ ok tuşları)
+    document.addEventListener('keydown', handleKeyNavigation);
+}
+
+function navigateCard(direction) {
+    const newIndex = currentCardIndex + direction;
+    
+    if (newIndex >= 0 && newIndex < wordsData.length) {
+        currentCardIndex = newIndex;
+        showCardModal(currentCardIndex);
+    }
+}
+
+function handleKeyNavigation(e) {
+    if (e.key === 'ArrowLeft') {
+        navigateCard(-1);
+    } else if (e.key === 'ArrowRight') {
+        navigateCard(1);
+    } else if (e.key === 'Escape') {
+        closeModal();
+    }
 }
 
 function closeModal() {
@@ -190,6 +237,38 @@ function closeModal() {
     if (modal) {
         modal.classList.remove('show');
         setTimeout(() => modal.remove(), 300);
+        document.removeEventListener('keydown', handleKeyNavigation);
+    }
+}
+
+// Delete from modal
+async function deleteWordFromModal(word) {
+    if (!confirm(`Delete "${word}" from your library?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/delete-word`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ word: word })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        // Modal'ı kapat
+        closeModal();
+        
+        // Library'yi yeniden yükle
+        loadLibrary();
+        
+    } catch (error) {
+        console.error('Error deleting word:', error);
+        alert('Failed to delete word. Please try again.');
     }
 }
 
@@ -226,3 +305,9 @@ function showError(message) {
 
 // ============== EXPORT ==============
 console.log('Library JS loaded successfully');
+
+// ============== GLOBAL SCOPE ==============
+window.deleteWord = deleteWord;
+window.deleteWordFromModal = deleteWordFromModal;
+window.closeModal = closeModal;
+window.navigateCard = navigateCard;
