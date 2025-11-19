@@ -15,11 +15,19 @@ Sunucu local olarak http://127.0.0.1:5000 adresinde çalışır ve API uç nokta
 API’nin doğru çalışması için .env dosyasının ve paket kurulumlarının yapılmış olması yeterlidir.
 
 git clone https://github.com/denizyldrm123/Lexora.git
+
 cd Lexora/backend
+
 python3 -m venv venv
+
 source venv/bin/activate   # macOS/Linux
+
 backend içinde .env dosyası oluşturulur
+
 OPENAI_API_KEY=YOUR_KEY
+
 pip install -r requirements.txt
+
 python app.py
+
 http://127.0.0.1:5000
