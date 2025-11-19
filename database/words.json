@@ -1,68 +1,95 @@
 {
     "words": {
-        "learn": {
+        "lexora": {
+            "meaning": "A term used to describe a collection or study of words and their meanings.",
             "synonyms": [
-                "study",
-                "acquire",
-                "grasp"
-            ],
-            "meaning": "To gain knowledge or skill by studying, practicing, or experiencing."
-        },
-        "explain": {
-            "synonyms": [
-                "clarify",
-                "elucidate",
-                "expound"
-            ],
-            "meaning": "to make something clear or understandable by describing it in more detail."
-        },
-        "define": {
-            "synonyms": [
-                "describe",
-                "explain",
-                "clarify"
-            ],
-            "meaning": "To state the exact meaning of a word or phrase."
-        },
-        "maintain": {
-            "synonyms": [
-                "sustain",
-                "preserve",
-                "uphold"
-            ],
-            "meaning": "to continue or preserve in a certain state or condition."
-        },
-        "type": {
-            "synonyms": [
-                "kind",
-                "category",
-                "sort"
-            ],
-            "meaning": "A category of items that share common characteristics.",
-            "examples": [
-                "What type of music do you like?",
-                "This type of plant needs a lot of sunlight.",
-                "He's the type of person who helps others."
-            ]
-        },
-        "start": {
-            "meaning": "to begin or commence something.",
-            "synonyms": [
-                "begin",
-                "commence",
-                "initiate"
+                "dictionary",
+                "glossary",
+                "encyclopedia"
             ],
             "examples": [
-                "I will start my homework now.",
-                "Please start the meeting on time.",
-                "They decided to start a new project."
+                "Lexora will lead the project meeting today.",
+                "I found an interesting book by Lexora.",
+                "The team celebrated Lexora's birthday last week."
             ]
         },
-        "good": {
-            "meaning": "Having desirable qualities or satisfactory characteristics."
+
+        "water": {
+            "meaning": "A clear, colorless, odorless liquid that is essential for life and is the most common solvent.",
+            "synonyms": [
+                "aqua",
+                "H2O",
+                "liquid"
+            ],
+            "examples": [
+                "The water is cold today.",
+                "She drank some water after the run.",
+                "The plants need water to grow."
+            ]
         },
-        "sea": {
-            "meaning": "The expanse of salt water that covers most of the Earth's surface and surrounds landmasses."
+        "try": {
+            "meaning": "to make an attempt or effort to do something",
+            "synonyms": [
+                "attempt",
+                "experiment",
+                "endeavor"
+            ],
+            "examples": [
+                "I will try my best.",
+                "They always try new things.",
+                "She decided to try again."
+            ]
+        },
+        "ephemeral": {
+            "meaning": "lasting for a very short time."
+        },
+        "happy": {
+            "meaning": "Feeling or showing pleasure, contentment, or joy.",
+            "synonyms": [
+                "joyful",
+                "content",
+                "cheerful"
+            ]
+        },
+        "library": {
+            "meaning": "A library is a place where books, manuscripts, and other informational resources are stored and made available for public use.",
+            "synonyms": [
+                "bookstore",
+                "archive",
+                "repository"
+            ],
+            "examples": [
+                "I visited the library yesterday.",
+                "She borrowed a book from the library.",
+                "The library is quiet and peaceful."
+            ]
+        },
+        "software": {
+            "meaning": "Software is a collection of instructions and data that tell a computer how to perform specific tasks.",
+            "synonyms": [
+                "program",
+                "application",
+                "system"
+            ],
+            "examples": [
+                "I need to update the software.",
+                "The software crashed unexpectedly.",
+                "She developed new software for the project."
+            ]
+        },
+        "serendipity": {
+            "meaning": "The occurrence of events by chance in a happy or beneficial way.",
+            "synonyms": [
+                "chance",
+                "fortuity",
+                "luck"
+            ],
+            "examples": [
+                "We met by pure serendipity at the coffee shop.",
+                "Her discovery of the old book was a moment of serendipity.",
+                "Serendipity led him to the job of his dreams."
+            ]
+
         }
     }
 }
