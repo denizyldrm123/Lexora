@@ -63,7 +63,6 @@ function displayWords(words) {
     }
     
     wordsGrid.innerHTML = words.map((wordData, index) => {
-        // Synonyms varsa göster, yoksa boş
         const synonymsHTML = wordData.synonyms && wordData.synonyms.length > 0
             ? wordData.synonyms.map(syn => `<span class="synonym-tag">${syn}</span>`).join('')
             : '<span style="color: #666;">No synonyms available</span>';
@@ -87,12 +86,21 @@ function displayWords(words) {
             </div>
             
             <div class="card-footer">
-                <button class="card-delete-btn" onclick="deleteWord('${wordData.word}')">
+                <button class="card-delete-btn" data-word="${wordData.word}">
                     🗑️ Delete
                 </button>
             </div>
         </div>
     `}).join('');
+    
+    // ✅ DELETE BUTONLARINA EVENT LISTENER EKLE
+    document.querySelectorAll('.card-delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Kartın click eventi tetiklenmesin
+            const word = btn.dataset.word;
+            deleteWord(word);
+        });
+    });
     
     // Kartlara tıklama event'i ekle (büyütme için)
     document.querySelectorAll('.word-card').forEach(card => {
@@ -117,7 +125,7 @@ async function deleteWord(word) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ word: word })
+            body: JSON.stringify({ text: word })  // ✅ word → text
         });
         
         if (!response.ok) {
@@ -150,21 +158,127 @@ function showCardModal(index) {
     
     if (!wordData) return;
     
-    // Önceki modal varsa kaldır
+    // ✅ Mevcut modal varsa sadece içeriği güncelle
     const existingModal = document.querySelector('.word-modal');
+    
     if (existingModal) {
-        existingModal.remove();
+        // Sadece içeriği güncelle, modal'ı kapatma
+        updateModalContent(existingModal, index, wordData);
+        return;
     }
     
-    // Önceki ve sonraki butonları göster/gizle
+    // İlk açılış - yeni modal oluştur
+    createNewModal(index, wordData);
+}
+
+// ✅ Yeni fonksiyon: Sadece içeriği güncelle
+function updateModalContent(modal, index, wordData) {
+    const modalContent = modal.querySelector('.modal-content');
     const hasPrev = index > 0;
     const hasNext = index < wordsData.length - 1;
     
-    // Modal oluştur
+    // Fade animasyonu
+    modalContent.style.transition = 'opacity 0.15s ease';
+    modalContent.style.opacity = '0';
+    
+    setTimeout(() => {
+        // Ok butonlarını güncelle
+        updateNavigationButtons(modal, hasPrev, hasNext);
+        
+        // İçeriği güncelle
+        modalContent.innerHTML = `
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            
+            <div class="modal-counter">${index + 1} / ${wordsData.length}</div>
+            
+            <h2 class="modal-word">${wordData.word}</h2>
+            
+            <div class="modal-section">
+                <h3 class="modal-section-title">📖 Meaning</h3>
+                <p class="modal-text">${wordData.meaning || 'No meaning available'}</p>
+            </div>
+            
+            ${wordData.synonyms && wordData.synonyms.length > 0 ? `
+            <div class="modal-section">
+                <h3 class="modal-section-title">🔤 Synonyms</h3>
+                <div class="modal-synonyms">
+                    ${wordData.synonyms.map(syn => `<span class="synonym-tag">${syn}</span>`).join('')}
+                </div>
+            </div>
+            ` : ''}
+            
+            ${wordData.examples && wordData.examples.length > 0 ? `
+            <div class="modal-section">
+                <h3 class="modal-section-title">💬 Examples</h3>
+                ${wordData.examples.map(ex => `<div class="example-item">${ex}</div>`).join('')}
+            </div>
+            ` : ''}
+            
+            <div class="modal-footer">
+                <button class="modal-delete-btn" data-word="${wordData.word}">
+                    🗑️ Delete Word
+                </button>
+            </div>
+        `;
+        
+        // Delete butonuna event listener
+        const deleteBtn = modalContent.querySelector('.modal-delete-btn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => {
+                deleteWordFromModal(deleteBtn.dataset.word);
+            });
+        }
+        
+        // Fade in
+        modalContent.style.opacity = '1';
+    }, 150);
+}
+
+// ✅ Ok butonlarını güncelle
+function updateNavigationButtons(modal, hasPrev, hasNext) {
+    // Önceki butonları kaldır
+    const oldPrev = modal.querySelector('.modal-prev');
+    const oldNext = modal.querySelector('.modal-next');
+    if (oldPrev) oldPrev.remove();
+    if (oldNext) oldNext.remove();
+    
+    const modalContent = modal.querySelector('.modal-content');
+    const overlay = modal.querySelector('.modal-overlay');
+    
+    // Yeni butonları ekle
+    if (hasPrev) {
+        const btn = document.createElement('button');
+        btn.className = 'modal-nav modal-prev';
+        btn.onclick = () => navigateCard(-1);
+        btn.innerHTML = `
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        `;
+        modal.insertBefore(btn, modalContent);
+    }
+    
+    if (hasNext) {
+        const btn = document.createElement('button');
+        btn.className = 'modal-nav modal-next';
+        btn.onclick = () => navigateCard(1);
+        btn.innerHTML = `
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        `;
+        modal.insertBefore(btn, modalContent);
+    }
+}
+
+// ✅ İlk modal oluştur
+function createNewModal(index, wordData) {
+    const hasPrev = index > 0;
+    const hasNext = index < wordsData.length - 1;
+    
     const modal = document.createElement('div');
     modal.className = 'word-modal';
     
-    // ✅ OK BUTONLARI CONTENT DIŞINDA
     modal.innerHTML = `
         <div class="modal-overlay" onclick="closeModal()"></div>
         
@@ -175,6 +289,7 @@ function showCardModal(index) {
             </svg>
         </button>
         ` : ''}
+        
         ${hasNext ? `
         <button class="modal-nav modal-next" onclick="navigateCard(1)">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -220,20 +335,15 @@ function showCardModal(index) {
     `;
     
     document.body.appendChild(modal);
-    
-    // Animation için timeout
     setTimeout(() => modal.classList.add('show'), 10);
     
-    // Modal delete butonuna event listener ekle
     const deleteBtn = modal.querySelector('.modal-delete-btn');
     if (deleteBtn) {
         deleteBtn.addEventListener('click', () => {
-            const word = deleteBtn.dataset.word;
-            deleteWordFromModal(word);
+            deleteWordFromModal(deleteBtn.dataset.word);
         });
     }
     
-    // Klavye navigasyonu (sol/sağ ok tuşları)
     document.addEventListener('keydown', handleKeyNavigation);
 }
 
@@ -241,8 +351,17 @@ function navigateCard(direction) {
     const newIndex = currentCardIndex + direction;
     
     if (newIndex >= 0 && newIndex < wordsData.length) {
-        currentCardIndex = newIndex;
-        showCardModal(currentCardIndex);
+        const modalContent = document.querySelector('.modal-content');
+        
+        // ✅ Fade out
+        modalContent.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+        modalContent.style.opacity = '0';
+        modalContent.style.transform = direction > 0 ? 'translateX(20px)' : 'translateX(-20px)';
+        
+        setTimeout(() => {
+            currentCardIndex = newIndex;
+            showCardModal(currentCardIndex);
+        }, 150);
     }
 }
 
@@ -333,11 +452,11 @@ function showError(message) {
     `;
 }
 
-// ============== EXPORT ==============
-console.log('Library JS loaded successfully');
-
 // ============== GLOBAL SCOPE ==============
 window.deleteWord = deleteWord;
 window.deleteWordFromModal = deleteWordFromModal;
 window.closeModal = closeModal;
 window.navigateCard = navigateCard;
+
+// ============== EXPORT ==============
+console.log('Library JS loaded successfully');

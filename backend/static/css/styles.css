@@ -589,7 +589,7 @@ body {
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     transform: scale(0.9);
-    transition: transform 0.3s ease;
+    transition: opacity 0.15s ease;
 }
 
 .word-modal.show .modal-content {
