@@ -4,9 +4,15 @@ import sys
 import os
 import json
 
-# Add parent directory to path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add parent directory to path to access both database and services
+current_dir = os.path.dirname(os.path.abspath(__file__))  # backend/
+parent_dir = os.path.dirname(current_dir)  # lexora/
+sys.path.append(parent_dir)
+
+# Now we can import from both database and services
+from database.loader import load_words, save_words
 from services.word_service import update_word
+
 load_dotenv()
 
 from ai.meaning import (
@@ -115,6 +121,39 @@ def api_examples():
     )
     return jsonify({"examples" :result})
 
+@lexora.route("/api/delete-word", methods=["POST"])
+def api_delete_word():
+    try:
+        data = request.get_json()
+        print("🔍 Received data:", data)  # ✅ EKLE
+        
+        word = data.get("text", "")
+        print("🔍 Word extracted:", word)  # ✅ EKLE
+        
+        if not word:
+            print("❌ Word is empty!")  # ✅ EKLE
+            return jsonify({"error": "Word is required"}), 400
+        
+        db = load_words()
+        words = db.get("words", {})
+        word_lower = word.lower()
+        
+        print("🔍 Looking for word:", word_lower)  # ✅ EKLE
+        print("🔍 Available words:", list(words.keys()))  # ✅ EKLE
+        
+        if word_lower in words:
+            del words[word_lower]
+            db["words"] = words
+            save_words(db)
+            print("✅ Word deleted successfully")  # ✅ EKLE
+            return jsonify({"success": True, "deleted": word})
+        else:
+            print("❌ Word not found in database")  # ✅ EKLE
+            return jsonify({"error": "Word not found"}), 404
+            
+    except Exception as e:
+        print("❌ Exception:", str(e))  # ✅ EKLE
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     lexora.run(debug=True)

@@ -163,13 +163,28 @@ function showCardModal(index) {
     // Modal oluştur
     const modal = document.createElement('div');
     modal.className = 'word-modal';
+    
+    // ✅ OK BUTONLARI CONTENT DIŞINDA
     modal.innerHTML = `
         <div class="modal-overlay" onclick="closeModal()"></div>
+        
+        ${hasPrev ? `
+        <button class="modal-nav modal-prev" onclick="navigateCard(-1)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        ` : ''}
+        ${hasNext ? `
+        <button class="modal-nav modal-next" onclick="navigateCard(1)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        ` : ''}
+        
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal()">✕</button>
-            
-            ${hasPrev ? '<button class="modal-nav modal-prev" onclick="navigateCard(-1)">‹</button>' : ''}
-            ${hasNext ? '<button class="modal-nav modal-next" onclick="navigateCard(1)">›</button>' : ''}
             
             <div class="modal-counter">${index + 1} / ${wordsData.length}</div>
             
@@ -197,7 +212,7 @@ function showCardModal(index) {
             ` : ''}
             
             <div class="modal-footer">
-                <button class="modal-delete-btn" onclick="deleteWordFromModal('${wordData.word}')">
+                <button class="modal-delete-btn" data-word="${wordData.word}">
                     🗑️ Delete Word
                 </button>
             </div>
@@ -208,6 +223,15 @@ function showCardModal(index) {
     
     // Animation için timeout
     setTimeout(() => modal.classList.add('show'), 10);
+    
+    // Modal delete butonuna event listener ekle
+    const deleteBtn = modal.querySelector('.modal-delete-btn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', () => {
+            const word = deleteBtn.dataset.word;
+            deleteWordFromModal(word);
+        });
+    }
     
     // Klavye navigasyonu (sol/sağ ok tuşları)
     document.addEventListener('keydown', handleKeyNavigation);
@@ -243,27 +267,33 @@ function closeModal() {
 
 // Delete from modal
 async function deleteWordFromModal(word) {
+    console.log("🔍 Deleting word:", word);  // ✅ EKLE
+    
     if (!confirm(`Delete "${word}" from your library?`)) {
         return;
     }
     
     try {
+        const requestBody = { text: word };
+        console.log("📤 Request body:", requestBody);  // ✅ EKLE
+        
         const response = await fetch(`${API_BASE}/api/delete-word`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ word: word })
+            body: JSON.stringify(requestBody)
         });
         
+        console.log("📥 Response status:", response.status);  // ✅ EKLE
+        
         if (!response.ok) {
+            const errorData = await response.json();
+            console.log("❌ Error data:", errorData);  // ✅ EKLE
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        // Modal'ı kapat
         closeModal();
-        
-        // Library'yi yeniden yükle
         loadLibrary();
         
     } catch (error) {
