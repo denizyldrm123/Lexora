@@ -5,6 +5,7 @@ def get_client():
     return OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def get_word_translation(word):
+    print("get word api is called")
     client = get_client()
 
     input_prompt = (
@@ -27,6 +28,7 @@ def get_word_translation(word):
     return response.output_text
 
 def get_word_meaning(word):
+    print("get word meaning api is called")
     client = get_client()
 
     input_prompt = (
@@ -50,6 +52,7 @@ def get_word_meaning(word):
 
 
 def get_word_synonyms(word):
+    print("get word synonymus api is called")
     client = get_client()
     input_prompt = (
         f"Generate synonyms for the word '{word}'.\n"
@@ -71,6 +74,7 @@ def get_word_synonyms(word):
 
 
 def get_word_examples(word):
+    print("get word examples api is called")
     client = get_client()
 
     input_prompt = (

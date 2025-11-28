@@ -6,6 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database.loader import load_words, save_words
 
 def update_word(word, meaning=None, synonyms=None, examples=None, translation=None):
+    print("update word api is called")
     db = load_words()
     words = db.get("words",{})
     word = word.lower()

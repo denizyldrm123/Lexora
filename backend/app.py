@@ -43,6 +43,7 @@ WORDS_DB = os.path.join(DATA_DIR, "words.json")
 
 @lexora.route("/api/library")
 def api_library():
+    print("api library worked")
     try:
         with open(WORDS_DB, "r") as f:
             data = json.load(f)
@@ -73,6 +74,7 @@ def streak():
 
 @lexora.route("/api/meaning", methods=["post"])
 def api_meaning():
+    print("meaning router is called")
     data = request.get_json()
     word = data.get("text","")
     meaning_json = json.loads(get_word_meaning(word))
@@ -85,6 +87,7 @@ def api_meaning():
 
 @lexora.route("/api/translation", methods=["post"])
 def api_translation():
+    print("translation router is called")
     data = request.get_json()
     word = data.get("text","")
     translation_json = json.loads(get_word_translation(word))
@@ -99,6 +102,7 @@ def api_translation():
 
 @lexora.route("/api/synonyms",methods=["POST"])
 def api_synonyms():
+    print("synonyms router is called")
     data = request.get_json()
     word = data.get("text","")
     synonyms_json = json.loads(get_word_synonyms(word))
@@ -111,6 +115,7 @@ def api_synonyms():
 
 @lexora.route("/api/examples",methods=["POST"])
 def api_examples():
+    print("examples  router is called")
     data = request.get_json()
     word = data.get("text", "")
     example_json = json.loads(get_word_examples(word))
