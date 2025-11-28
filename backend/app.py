@@ -130,34 +130,34 @@ def api_examples():
 def api_delete_word():
     try:
         data = request.get_json()
-        print("🔍 Received data:", data)  # ✅ EKLE
+        print(" Received data:", data)  #   EKLE
         
         word = data.get("text", "")
-        print("🔍 Word extracted:", word)  # ✅ EKLE
+        print(" Word extracted:", word)  #   EKLE
         
         if not word:
-            print("❌ Word is empty!")  # ✅ EKLE
+            print("Word is empty!")  #   EKLE
             return jsonify({"error": "Word is required"}), 400
         
         db = load_words()
         words = db.get("words", {})
         word_lower = word.lower()
         
-        print("🔍 Looking for word:", word_lower)  # ✅ EKLE
-        print("🔍 Available words:", list(words.keys()))  # ✅ EKLE
+        print(" Looking for word:", word_lower)  #   EKLE
+        print(" Available words:", list(words.keys()))  #   EKLE
         
         if word_lower in words:
             del words[word_lower]
             db["words"] = words
             save_words(db)
-            print("✅ Word deleted successfully")  # ✅ EKLE
+            print("Word deleted successfully")  #   EKLE
             return jsonify({"success": True, "deleted": word})
         else:
-            print("❌ Word not found in database")  # ✅ EKLE
+            print("Word not found in database")  #   EKLE
             return jsonify({"error": "Word not found"}), 404
             
     except Exception as e:
-        print("❌ Exception:", str(e))  # ✅ EKLE
+        print("Exception:", str(e))  #   EKLE
         return jsonify({"error": str(e)}), 500
 
 # ============== STREAK TRACKING ENDPOINTS ==============
@@ -170,7 +170,7 @@ def api_streak():
         
         user_data = load_user()
         
-        # ✅ Library'deki toplam kelime sayısını hesapla
+        #   Library'deki toplam kelime sayısını hesapla
         words_db = load_words()
         total_words_in_library = len(words_db.get("words", {}))
         
@@ -221,7 +221,7 @@ def api_streak():
         return jsonify({
             "current": user_data.get("current_streak", 0),
             "longest": user_data.get("longest_streak", 0),
-            "total_words": total_words_in_library,  # ✅ Library'den gelir
+            "total_words": total_words_in_library,  #   Library'den gelir
             "today_words": user_data.get("today_words", 0)
         })
         

@@ -112,7 +112,7 @@ function displayWords(words) {
         </div>
     `}).join('');
     
-    // ✅ DELETE BUTONLARINA EVENT LISTENER EKLE
+    //   DELETE BUTONLARINA EVENT LISTENER EKLE
     document.querySelectorAll('.card-delete-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation(); // Kartın click eventi tetiklenmesin
@@ -144,7 +144,7 @@ async function deleteWord(word) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ text: word })  // ✅ word → text
+            body: JSON.stringify({ text: word })  //   word → text
         });
         
         if (!response.ok) {
@@ -177,7 +177,7 @@ function showCardModal(index) {
     
     if (!wordData) return;
     
-    // ✅ Mevcut modal varsa sadece içeriği güncelle
+    //   Mevcut modal varsa sadece içeriği güncelle
     const existingModal = document.querySelector('.word-modal');
     
     if (existingModal) {
@@ -190,7 +190,7 @@ function showCardModal(index) {
     createNewModal(index, wordData);
 }
 
-// ✅ Yeni fonksiyon: Sadece içeriği güncelle
+//   Yeni fonksiyon: Sadece içeriği güncelle
 function updateModalContent(modal, index, wordData) {
     const modalContent = modal.querySelector('.modal-content');
     const hasPrev = index > 0;
@@ -253,7 +253,7 @@ function updateModalContent(modal, index, wordData) {
     }, 150);
 }
 
-// ✅ Ok butonlarını güncelle
+//   Ok butonlarını güncelle
 function updateNavigationButtons(modal, hasPrev, hasNext) {
     // Önceki butonları kaldır
     const oldPrev = modal.querySelector('.modal-prev');
@@ -290,7 +290,7 @@ function updateNavigationButtons(modal, hasPrev, hasNext) {
     }
 }
 
-// ✅ İlk modal oluştur
+//   İlk modal oluştur
 function createNewModal(index, wordData) {
     const hasPrev = index > 0;
     const hasNext = index < wordsData.length - 1;
@@ -372,7 +372,7 @@ function navigateCard(direction) {
     if (newIndex >= 0 && newIndex < wordsData.length) {
         const modalContent = document.querySelector('.modal-content');
         
-        // ✅ Fade out
+        //   Fade out
         modalContent.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
         modalContent.style.opacity = '0';
         modalContent.style.transform = direction > 0 ? 'translateX(20px)' : 'translateX(-20px)';
@@ -405,7 +405,7 @@ function closeModal() {
 
 // Delete from modal
 async function deleteWordFromModal(word) {
-    console.log("🔍 Deleting word:", word);  // ✅ EKLE
+    console.log(" Deleting word:", word);  //   EKLE
     
     if (!confirm(`Delete "${word}" from your library?`)) {
         return;
@@ -413,7 +413,7 @@ async function deleteWordFromModal(word) {
     
     try {
         const requestBody = { text: word };
-        console.log("📤 Request body:", requestBody);  // ✅ EKLE
+        console.log("📤 Request body:", requestBody);  //   EKLE
         
         const response = await fetch(`${API_BASE}/api/delete-word`, {
             method: 'POST',
@@ -423,11 +423,11 @@ async function deleteWordFromModal(word) {
             body: JSON.stringify(requestBody)
         });
         
-        console.log("📥 Response status:", response.status);  // ✅ EKLE
+        console.log("📥 Response status:", response.status);  //   EKLE
         
         if (!response.ok) {
             const errorData = await response.json();
-            console.log("❌ Error data:", errorData);  // ✅ EKLE
+            console.log(" Error data:", errorData);  //   EKLE
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
