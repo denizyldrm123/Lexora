@@ -165,10 +165,14 @@ def api_delete_word():
 def api_streak():
     """Get current streak statistics"""
     try:
-        from database.loader import load_user
+        from database.loader import load_user, load_words
         from datetime import datetime
         
         user_data = load_user()
+        
+        # ✅ Library'deki toplam kelime sayısını hesapla
+        words_db = load_words()
+        total_words_in_library = len(words_db.get("words", {}))
         
         # Calculate streak
         today = datetime.now().date()
@@ -217,14 +221,13 @@ def api_streak():
         return jsonify({
             "current": user_data.get("current_streak", 0),
             "longest": user_data.get("longest_streak", 0),
-            "total_words": user_data.get("total_words", 0),
+            "total_words": total_words_in_library,  # ✅ Library'den gelir
             "today_words": user_data.get("today_words", 0)
         })
         
     except Exception as e:
         print("Error getting streak:", e)
         return jsonify({"error": str(e)}), 500
-
 
 @lexora.route("/api/update-streak", methods=["POST"])
 def api_update_streak():
@@ -238,9 +241,6 @@ def api_update_streak():
         today_words = user_data.get("today_words", 0) + 1
         user_data["today_words"] = today_words
         
-        # Increment total words
-        total_words = user_data.get("total_words", 0) + 1
-        user_data["total_words"] = total_words
         
         save_user(user_data)
         
