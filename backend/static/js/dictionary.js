@@ -13,6 +13,29 @@ const exampleBtn = document.getElementById('exampleBtn');
 const clearBtn = document.getElementById('clearBtn');
 const resultBox = document.getElementById('resultBox');
 
+// ============== INITIALIZATION ==============
+document.addEventListener('DOMContentLoaded', () => {
+    loadInitialStreak(); // Sayfa açılınca streak'i yükle
+});
+
+// ============== LOAD INITIAL STREAK ==============
+async function loadInitialStreak() {
+    try {
+        const response = await fetch(`${API_BASE}/api/streak`);
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Update navbar streak badge
+            const streakCount = document.getElementById('streakCount');
+            if (streakCount) {
+                streakCount.textContent = data.current || 0;
+            }
+        }
+    } catch (error) {
+        console.error('Error loading initial streak:', error);
+    }
+}
+
 // Current word being searched
 let currentWord = '';
 
@@ -59,6 +82,7 @@ async function getMeaning() {
         
         const data = await response.json();
         displayMeaning(word, data.meaning);
+        updateStreakCounter();
         
     } catch (error) {
         console.error('Error fetching meaning:', error);
@@ -110,6 +134,7 @@ async function getSynonyms() {
             : String(data.synonyms).split(',').map(s => s.trim());
 
         displaySynonyms(word, synonymsArray);
+        updateStreakCounter();
         
     } catch (error) {
         console.error('Error fetching synonyms:', error);
@@ -152,7 +177,6 @@ function displaySynonyms(word, synonyms) {
 }
 
 
-// ============== API CALL 3: GET EXAMPLES ==============
 // ============== API CALL 3: GET EXAMPLES ==============
 async function getExamples() {
     const word = wordInput.value.trim();
@@ -201,6 +225,7 @@ async function getExamples() {
         // -------------------
 
         displayExamples(word, examplesArray);
+        updateStreakCounter();
         
     } catch (error) {
         console.error('Error fetching examples:', error);
@@ -260,3 +285,30 @@ function showError(message) {
 
 // ============== INITIALIZATION ==============
 console.log('Dictionary JS loaded successfully');
+
+// ============== STREAK UPDATE FUNCTION ==============
+async function updateStreakCounter() {
+    try {
+        // Update today's word count
+        await fetch(`${API_BASE}/api/update-streak`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        // Get updated streak data
+        const response = await fetch(`${API_BASE}/api/streak`);
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Update navbar streak badge
+            const streakCount = document.getElementById('streakCount');
+            if (streakCount) {
+                streakCount.textContent = data.current || 0;
+            }
+        }
+    } catch (error) {
+        console.error('Error updating streak:', error);
+    }
+}

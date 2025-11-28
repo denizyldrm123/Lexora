@@ -14,7 +14,26 @@ const streakCountElement = document.getElementById('streakCount');
 // ============== INITIALIZATION ==============
 document.addEventListener('DOMContentLoaded', () => {
     loadLibrary();
+    loadInitialStreak();
 });
+
+// ============== LOAD INITIAL STREAK ==============
+async function loadInitialStreak() {
+    try {
+        const response = await fetch(`${API_BASE}/api/streak`);
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Update navbar streak badge
+            const streakCount = document.getElementById('streakCount');
+            if (streakCount) {
+                streakCount.textContent = data.current || 0;
+            }
+        }
+    } catch (error) {
+        console.error('Error loading initial streak:', error);
+    }
+}
 
 // ============== LOAD LIBRARY FROM BACKEND ==============
 async function loadLibrary() {

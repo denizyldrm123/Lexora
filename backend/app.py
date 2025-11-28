@@ -160,5 +160,100 @@ def api_delete_word():
         print("❌ Exception:", str(e))  # ✅ EKLE
         return jsonify({"error": str(e)}), 500
 
+# ============== STREAK TRACKING ENDPOINTS ==============
+@lexora.route("/api/streak", methods=["GET"])
+def api_streak():
+    """Get current streak statistics"""
+    try:
+        from database.loader import load_user
+        from datetime import datetime
+        
+        user_data = load_user()
+        
+        # Calculate streak
+        today = datetime.now().date()
+        last_opened = user_data.get("last_opened")
+        
+        current_streak = user_data.get("current_streak", 0)
+        
+        if last_opened:
+            last_date = datetime.fromisoformat(last_opened).date()
+            days_diff = (today - last_date).days
+            
+            if days_diff == 0:
+                # Same day - keep current streak
+                pass
+            elif days_diff == 1:
+                # Next day - increment streak
+                current_streak += 1
+                user_data["current_streak"] = current_streak
+                user_data["last_opened"] = today.isoformat()
+                
+                # Update longest streak
+                if current_streak > user_data.get("longest_streak", 0):
+                    user_data["longest_streak"] = current_streak
+                
+                from database.loader import save_user
+                save_user(user_data)
+            else:
+                # Streak broken - reset to 1
+                current_streak = 1
+                user_data["current_streak"] = 1
+                user_data["longest_streak"] = max(user_data.get("longest_streak", 0), current_streak)
+                user_data["last_opened"] = today.isoformat()
+                
+                from database.loader import save_user
+                save_user(user_data)
+        else:
+            # First time - initialize
+            current_streak = 1
+            user_data["current_streak"] = 1
+            user_data["longest_streak"] = 1
+            user_data["last_opened"] = today.isoformat()
+            
+            from database.loader import save_user
+            save_user(user_data)
+        
+        return jsonify({
+            "current": user_data.get("current_streak", 0),
+            "longest": user_data.get("longest_streak", 0),
+            "total_words": user_data.get("total_words", 0),
+            "today_words": user_data.get("today_words", 0)
+        })
+        
+    except Exception as e:
+        print("Error getting streak:", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@lexora.route("/api/update-streak", methods=["POST"])
+def api_update_streak():
+    """Update today's word count"""
+    try:
+        from database.loader import load_user, save_user
+        
+        user_data = load_user()
+        
+        # Increment today's word count
+        today_words = user_data.get("today_words", 0) + 1
+        user_data["today_words"] = today_words
+        
+        # Increment total words
+        total_words = user_data.get("total_words", 0) + 1
+        user_data["total_words"] = total_words
+        
+        save_user(user_data)
+        
+        return jsonify({
+            "success": True,
+            "today_words": today_words,
+            "total_words": total_words
+        })
+        
+    except Exception as e:
+        print("Error updating streak:", e)
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == "__main__":
     lexora.run(debug=True)
